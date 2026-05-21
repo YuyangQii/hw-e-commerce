@@ -1,7 +1,7 @@
-import { Badge, Box, Button, Card, Container, Flex, Group, Image, Text, Title } from '@mantine/core';
+import { Badge, Button, Card, Container, Flex, Group, Image, Text, Title } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { Spinner } from '../../../components/ui/Spinner';
-import type { Product, ProductResponse } from '../type';
+import type { Product } from '../type';
 import { fetchProducts } from '../api/productApi';
 import { useNavigate } from 'react-router-dom';
 
@@ -30,7 +30,7 @@ const Products = () => {
       <Text size="lg">Products page - add your products here</Text>
       <Flex wrap="wrap" gap={20}>
         {data?.products.map((product: Product) => {
-          const { id, title, description, price, rating, stock, thumbnail, discountPercentage } = product;
+          const { id, title, description, price, thumbnail, discountPercentage } = product;
           const discountedPrice = (price * (1 - discountPercentage / 100));
 
           return (

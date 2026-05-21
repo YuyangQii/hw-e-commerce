@@ -1,7 +1,7 @@
 import { Badge, Box, Button, Card, Container, Flex, Group, Image, Text, Title } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { Spinner } from '../../../components/ui/Spinner';
-import { Product, ProductResponse } from '../type';
+import type { Product, ProductResponse } from '../type';
 import { fetchProducts } from '../api/productApi';
 import { useNavigate } from 'react-router-dom';
 

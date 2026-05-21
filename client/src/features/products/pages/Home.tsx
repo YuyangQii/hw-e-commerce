@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import HomeInfoSection from "../../../components/home/HomeInfoSection";
 import { Spinner } from "../../../components/ui/Spinner";
 import { fetchProducts } from "../api/productApi";
+import type { Product } from "../type";
 
 const Recommendations = () => {
   const { data, isLoading, isError, error } = useQuery({
@@ -17,7 +18,7 @@ const Recommendations = () => {
     <Box mb="xl">
       <Title order={2} mb="md">✨ Recommended for You</Title>
       <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} spacing="md">
-        {data?.products.slice(0, 4).map((product) => (
+        {data?.products.slice(0, 4).map((product: Product) => (
           <Card key={product.id} shadow="sm" padding="lg" radius="md" withBorder>
             <Card.Section>
               <Image src={product.thumbnail} height={160} alt={product.title} />

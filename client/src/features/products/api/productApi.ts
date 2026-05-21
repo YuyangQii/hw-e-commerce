@@ -1,4 +1,4 @@
-import { ProductResponse } from "./type";
+import { ProductResponse } from "../type";
 
 export const fetchProducts = async () => {
   const res = await fetch("https://dummyjson.com/products");

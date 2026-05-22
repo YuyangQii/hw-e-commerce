@@ -27,7 +27,6 @@ const Products = () => {
       <Title order={1} mb="xl">
         Our Products
       </Title>
-      <Text size="lg">Products page - add your products here</Text>
       <Flex wrap="wrap" gap={20}>
         {data?.products.map((product: Product) => {
           const { id, title, description, price, thumbnail, discountPercentage } = product;

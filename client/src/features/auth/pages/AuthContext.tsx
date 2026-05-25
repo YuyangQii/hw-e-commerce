@@ -13,7 +13,6 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-
     const [user, setUser] = useState<AuthUser | null>(null)
     const [isLoading, setIsLoading] = useState(true);
 
@@ -27,6 +26,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const login = async (input: LoginInput) => {
         const authUser = await loginUser(input);
+        if (!authUser.token) throw new Error("Invalid username or password");
         localStorage.setItem("token", authUser.token);
         localStorage.setItem("user", JSON.stringify(authUser));
         setUser(authUser);
@@ -43,6 +43,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         </AuthContext.Provider>
     );
 };
+
 
 export const useAuth = () => {
     return useContext(AuthContext);

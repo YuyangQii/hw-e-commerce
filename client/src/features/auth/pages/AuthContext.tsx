@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { AuthUser, LoginInput } from "./type";
-import { loginUser, logoutUser, getCurrentUser } from "../api";
+import { loginUser, getCurrentUser } from "../api";
 
 interface AuthContextType {
     user: AuthUser | null;
@@ -29,7 +29,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const logout = () => {
-        logoutUser();
         setUser(null);
     }
 

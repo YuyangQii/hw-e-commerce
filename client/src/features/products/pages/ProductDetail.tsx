@@ -1,5 +1,6 @@
 import { Badge, Button, Container, Grid, Group, Image, Text, Title } from "@mantine/core";
 import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../../auth/pages/AuthContext";
 import { useAddCartItem } from "../../cart/hooks/useCart";
 import { useProduct } from "../hooks/useProducts";
 
@@ -10,6 +11,7 @@ function ProductDetail() {
 
   const { data: product, isLoading, isError } = useProduct(productId);
   const addMutation = useAddCartItem();
+  const auth = useAuth();
 
   if (isLoading) {
     return <Text>Loading...</Text>;
@@ -20,6 +22,7 @@ function ProductDetail() {
   }
 
   function handleAddToCart() {
+    if (!auth?.user) return navigate("/login");
     if (!product) return;
     addMutation.mutate({
       id: product.id,

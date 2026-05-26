@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { AuthUser, LoginInput } from "./type";
-import { loginUser, logoutUser } from "../api";
+import { loginUser, logoutUser, getCurrentUser } from "../api";
 
 interface AuthContextType {
     user: AuthUser | null;
@@ -17,18 +17,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-        setIsLoading(false);
+        getCurrentUser().then(user => {
+            if (user) setUser(user);
+            setIsLoading(false);
+        });
     }, []);
 
     const login = async (input: LoginInput) => {
         const authUser = await loginUser(input);
-        if (!authUser.token) throw new Error("Invalid username or password");
-        localStorage.setItem("token", authUser.token);
-        localStorage.setItem("user", JSON.stringify(authUser));
         setUser(authUser);
     };
 

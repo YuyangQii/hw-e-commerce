@@ -1,4 +1,4 @@
-import { Alert, Card, Container, Text, Title } from "@mantine/core";
+import { Button, Card, Container, Stack, TextInput, Title } from "@mantine/core";
 
 const Signup = () => {
   return (
@@ -7,15 +7,14 @@ const Signup = () => {
         <Title order={2} mb="md" ta="center">
           Signup
         </Title>
-        <Alert color="blue">
-          <Text size="sm">
-            Sign up is not available yet. To try the app, log in with any account from{" "}
-            <a href="https://dummyjson.com/users" target="_blank" rel="noreferrer">
-              dummyjson.com/users
-            </a>
-            . Default password is <strong>password123</strong>.
-          </Text>
-        </Alert>
+        <form>
+          <Stack mt="md">
+            <TextInput label="Username" />
+            <TextInput label="Email" type="email" />
+            <TextInput label="Password" type="password" />
+            <Button type="submit" disabled>Sign Up</Button>
+          </Stack>
+        </form>
       </Card>
     </Container>
   );

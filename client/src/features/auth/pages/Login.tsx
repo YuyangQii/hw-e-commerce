@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Container, Title, TextInput, Button, Stack, Alert } from "@mantine/core";
+import { useNavigate, Link } from "react-router-dom";
+import { Container, Title, TextInput, Button, Stack, Alert, Text } from "@mantine/core";
 import { useAuth } from "./AuthContext";
 
 const Login = () => {
@@ -8,6 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ username: "", password: "" });
   const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
   const auth = useAuth();
   const navigate = useNavigate();
 
@@ -27,10 +28,13 @@ const Login = () => {
     setErrors(newErrors);;
 
     try {
+      setLoading(true);
       await auth?.login({ username, password });
       navigate("/");
     } catch {
       setServerError("Invalid username or password");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -57,7 +61,8 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             error={errors.password}
           />
-          <Button type="submit">Login</Button>
+          <Button type="submit" loading={loading} disabled={loading}>Login</Button>
+          <Text size="sm" ta="center">Don't have an account? <Link to="/signup">Sign up</Link></Text>
         </Stack>
       </form>
     </Container>

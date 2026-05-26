@@ -1,7 +1,8 @@
-import { createHashRouter } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 
 import GlobalErrorPage from "../components/errors/GlobalErrorPage";
 import RootLayout from "../components/layout/RootLayout";
+import ProtectedRoute from "../components/auth/ProtectedRoute";
 
 import Home from "../features/products/pages/Home";
 import Products from "../features/products/pages/Products";
@@ -11,7 +12,7 @@ import Login from "../features/auth/pages/Login";
 import Signup from "../features/auth/pages/Signup";
 import Settings from "../features/settings/pages/Settings";
 
-export const router = createHashRouter([
+export const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
@@ -26,12 +27,11 @@ export const router = createHashRouter([
       { path: "login", element: <Login /> },
       { path: "signup", element: <Signup /> },
       {
-        path: "cart",
-        element: <Cart />,
-      },
-      {
-        path: "settings",
-        element: <Settings />,
+        element: <ProtectedRoute />,
+        children: [
+          { path: "cart", element: <Cart /> },
+          { path: "settings", element: <Settings /> },
+        ],
       },
     ],
   },

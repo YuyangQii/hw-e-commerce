@@ -1,61 +1,35 @@
-import { Cart, CartItem } from "./types";
-import { AppError } from "../../core/errors";
-import { ErrorCode } from "../../core/errors";
+import { AppError, ErrorCode } from "../../core/errors";
+import * as cartRepo from "./cart.repository";
+import * as productRepo from "../products/product.repository";
 
-const carts: { [userId: number]: Cart } = {};
-
-function calculateTotal(items: CartItem[]) {
-  let total = 0;
-  for (let i = 0; i < items.length; i++) {
-    total = total + items[i].price * items[i].quantity;
-  }
-  return total;
+export async function getCart(userId: number) {
+  return cartRepo.getCartWithItems(userId);
 }
 
-export function getCart(userId: number) {
-  if (!carts[userId]) {
-    carts[userId] = { userId: userId, items: [], total: 0 };
+export async function addItem(userId: number, productId: number, quantity: number) {
+  const product = await productRepo.findProductById(productId);
+  if (!product) {
+    throw new AppError("Product not found", 404, ErrorCode.NOT_FOUND);
   }
-  return carts[userId];
+
+  const cart = await cartRepo.findOrCreateCart(userId);
+  await cartRepo.addItem(cart.id, productId, quantity, String(product.price));
+  await cartRepo.updateCartTotal(cart.id);
+
+  return cartRepo.getCartWithItems(userId);
 }
 
-export function addItem(userId: number, newItem: CartItem) {
-  const cart = getCart(userId);
+export async function removeItem(userId: number, productId: number) {
+  const cart = await cartRepo.findOrCreateCart(userId);
+  await cartRepo.removeItem(cart.id, productId);
+  await cartRepo.updateCartTotal(cart.id);
 
-  let found = false;
-  for (let i = 0; i < cart.items.length; i++) {
-    if (cart.items[i].id === newItem.id) {
-      cart.items[i].quantity = cart.items[i].quantity + newItem.quantity;
-      found = true;
-    }
-  }
-
-  if (!found) {
-    cart.items.push(newItem);
-  }
-
-  cart.total = calculateTotal(cart.items);
-  return cart;
+  return cartRepo.getCartWithItems(userId);
 }
 
-export function removeItem(userId: number, itemId: number) {
-  const cart = getCart(userId);
-  const newItems: CartItem[] = [];
+export async function clearCart(userId: number) {
+  const cart = await cartRepo.findOrCreateCart(userId);
+  await cartRepo.clearCart(cart.id);
 
-  for (let i = 0; i < cart.items.length; i++) {
-    if (cart.items[i].id !== itemId) {
-      newItems.push(cart.items[i]);
-    }
-  }
-
-  cart.items = newItems;
-  cart.total = calculateTotal(cart.items);
-  return cart;
-}
-
-export function clearCart(userId: number) {
-  const cart = getCart(userId);
-  cart.items = [];
-  cart.total = 0;
-  return cart;
+  return cartRepo.getCartWithItems(userId);
 }

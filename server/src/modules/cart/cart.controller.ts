@@ -1,28 +1,28 @@
 import { Request, Response } from "express";
 import { getCart, addItem, removeItem, clearCart } from "./cart.service";
 
-export function getCartController(req: Request, res: Response) {
+export async function getCartController(req: Request, res: Response) {
   const userId = Number(req.params.userId);
-  const cart = getCart(userId);
+  const cart = await getCart(userId);
   res.json(cart);
 }
 
-export function addItemController(req: Request, res: Response) {
+export async function addItemController(req: Request, res: Response) {
   const userId = Number(req.params.userId);
-  const item = req.body;
-  const cart = addItem(userId, item);
+  const { productId, quantity } = req.body;
+  const cart = await addItem(userId, productId, quantity);
   res.json(cart);
 }
 
-export function removeItemController(req: Request, res: Response) {
+export async function removeItemController(req: Request, res: Response) {
   const userId = Number(req.params.userId);
-  const itemId = Number(req.params.itemId);
-  const cart = removeItem(userId, itemId);
+  const productId = Number(req.params.productId);
+  const cart = await removeItem(userId, productId);
   res.json(cart);
 }
 
-export function clearCartController(req: Request, res: Response) {
+export async function clearCartController(req: Request, res: Response) {
   const userId = Number(req.params.userId);
-  const cart = clearCart(userId);
+  const cart = await clearCart(userId);
   res.json(cart);
 }

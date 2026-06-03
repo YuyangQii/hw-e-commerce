@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { getAllUsers, getUserById, searchUser, createUser, updateUser, deleteUser } from "./user.service";
+import { AppError, ErrorCode } from "../../core/errors";
 
 export async function getAllUsersController(req: Request, res: Response) {
   const users = await getAllUsers();
@@ -26,12 +27,20 @@ export async function createUserController(req: Request, res: Response) {
 
 export async function updateUserController(req: Request, res: Response) {
   const id = Number(req.params.id);
+  // 只能修改自己，admin 可以修改任何人
+  if (req.userId !== id && req.role !== "admin") {
+    throw new AppError("Forbidden", 403, ErrorCode.UNAUTHORIZED);
+  }
   const user = await updateUser(id, req.body);
   res.json(user);
 }
 
 export async function deleteUserController(req: Request, res: Response) {
   const id = Number(req.params.id);
+  // 只能删除自己，admin 可以删除任何人
+  if (req.userId !== id && req.role !== "admin") {
+    throw new AppError("Forbidden", 403, ErrorCode.UNAUTHORIZED);
+  }
   const user = await deleteUser(id);
   res.json(user);
 }

@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import { AppError, ErrorCode } from "../../core/errors";
 import { UserResponse, NewUser } from "./types";
 import * as userRepo from "./user.repository";
@@ -36,6 +37,9 @@ export async function searchUser(username: string, email: string): Promise<UserR
 }
 
 export async function createUser(data: Omit<NewUser, "id">): Promise<UserResponse> {
+  const hashedPassword = await bcrypt.hash(data.password, SALT_ROUND);
+
+  data.password = hashedPassword;
   const user = await userRepo.create(data);
   return removePassword(user);
 }
